@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>3D Pie Chart with D3.js and D3-X3D.js</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  
+</head>
+<style type="text/css">
+  /*.bar {
+        fill: steelblue;
+      }*/
+
+      .bar:hover {
+        fill: dodgerblue;
+      }
+
+      .bar-label {
+        fill: #fff;
+        font-size: 14px;
+        text-anchor: middle;
+      }
+</style>
+<body>
+
+    <div id="p"></div>
+    
+
+  
+  
+  <script>
+
+//   var data = [
+//   { ProductName: "A", ProductName: "$49", value: 100, cost: 20 },
+//   { ProductName: "A", ProductName: "$12", value: 200, cost: 40 },
+//   { ProductName: "B", ProductName: "$3", value: 300, cost: 50 },
+//   { ProductName: "B", ProductName: "$4.3", value: 400, cost: 70 },
+//   { ProductName: "C", ProductName: "$33", value: 500, cost: 90 }
+// ];
+
+var data = [{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kosette<\/span>, Nano <span style=\"color:#21586D; font-weight:600\">Reusable<\/span> Face Protection Mask, Medium,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":22.44,"reviews_total":475.0,"Area":10659.0},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kitsch<\/span>, 100% Cotton <span style=\"color:#21586D; font-weight:600\">Reuseable<\/span> Face Masks, Leopard,<span style=\"color:#32893E; font-weight:600;\"> 3 Pack<\/span><\/span>","Price":17.72,"reviews_total":530.0,"Area":9391.6},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kosette<\/span>, Nano <span style=\"color:#21586D; font-weight:600\">Reusable<\/span> Face Protection Mask, Large,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":22.44,"reviews_total":304.0,"Area":6821.76},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">SunJoy<\/span>, KN95, Professional Protective <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> Face Mask,<span style=\"color:#32893E; font-weight:600;\"> 10 Pack<\/span><\/span>","Price":8.86,"reviews_total":658.0,"Area":5829.88},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Zidian<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> Protective Mask,<span style=\"color:#32893E; font-weight:600;\"> 50 Pack<\/span><\/span>","Price":15.35,"reviews_total":337.0,"Area":5172.95},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kitsch<\/span>, 100% Cotton <span style=\"color:#21586D; font-weight:600\">Reusable<\/span> Face Masks, Neutral,<span style=\"color:#32893E; font-weight:600;\"> 3 Pack<\/span><\/span>","Price":17.72,"reviews_total":259.0,"Area":4589.48},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Tony Moly<\/span>, CTT KN95 Respirator Mask,<span style=\"color:#32893E; font-weight:600;\"> 5 Count<\/span><\/span>","Price":26.57,"reviews_total":145.0,"Area":3852.65},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Luseta Beauty<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> Protection Face Mask,<span style=\"color:#32893E; font-weight:600;\"> 50 Pack<\/span><\/span>","Price":44.31,"reviews_total":49.0,"Area":2171.19},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Hwipure<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 25 Masks<\/span><\/span>","Price":50.19,"reviews_total":42.0,"Area":2107.98},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Luseta Beauty<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> Protection Face Mask,<span style=\"color:#32893E; font-weight:600;\"> 50 Pack<\/span><\/span>","Price":49.61,"reviews_total":41.0,"Area":2034.01},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kitsch<\/span>, 100% Cotton <span style=\"color:#21586D; font-weight:600\">Reuseable<\/span> Face Masks, Blush,<span style=\"color:#32893E; font-weight:600;\"> 3 Pack<\/span><\/span>","Price":17.72,"reviews_total":107.0,"Area":1896.04},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Dr. Puri<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 20 Masks<\/span><\/span>","Price":47.24,"reviews_total":40.0,"Area":1889.6},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Landsberg<\/span>, 3 Ply <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> Protective Face Mask,<span style=\"color:#32893E; font-weight:600;\"> 50 Pack<\/span><\/span>","Price":36.54,"reviews_total":43.0,"Area":1571.22},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">La Hauteur<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":5.61,"reviews_total":225.0,"Area":1262.25},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">HIGUARD<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":2.95,"reviews_total":168.0,"Area":495.6},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">Hwipure<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":2.95,"reviews_total":126.0,"Area":371.7},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Puritas<\/span>, 10 Days Mask, Large,<span style=\"color:#32893E; font-weight:600;\"> 3 Pack<\/span><\/span>","Price":6.61,"reviews_total":46.0,"Area":304.06},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Lozperi<\/span>, Copper Mask, Adult, Black,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":6.85,"reviews_total":42.0,"Area":287.7},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">YJ Corporation<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask, for Kids,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":3.93,"reviews_total":68.0,"Area":267.24},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Now Foods<\/span>, Face Mask, Grey, S-M,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":2.95,"reviews_total":68.0,"Area":200.6},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Lozperi<\/span>, Copper Mask, Adult, Gray,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":6.85,"reviews_total":20.0,"Area":137.0},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#81CACE; font-weight:600\"> \ud83c\udd53 <\/span> - <span style=\"color:#742B36; font-weight:600\">One Fine Day<\/span>, <span style=\"color:#81CACE; font-weight:600\">Disposable<\/span> KF94 ( N95 \/ KN95\/ FFP2 ) Mask,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":4.49,"reviews_total":25.0,"Area":112.25},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Lozperi<\/span>, Copper Mask, Adult, Dot,<span style=\"color:#32893E; font-weight:600;\"> 1 Count<\/span><\/span>","Price":6.85,"reviews_total":12.0,"Area":82.2},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Lozperi<\/span>, Copper Mask, Kids, Gray,<span style=\"color:#32893E; font-weight:600;\"> 1 Count<\/span><\/span>","Price":6.85,"reviews_total":8.0,"Area":54.8},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Lozperi<\/span>, Copper Mask, Kids, Black,<span style=\"color:#32893E; font-weight:600;\"> 1 Mask<\/span><\/span>","Price":6.85,"reviews_total":7.0,"Area":47.95},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kosette<\/span>, Fashion Mask with Filter Pocket,<span style=\"color:#32893E; font-weight:600;\"> 3 Masks<\/span><\/span>","Price":11.81,"reviews_total":2.0,"Area":23.62},{"ProductName":"<span style=\"color: #8F94D8;;font-family: Tahoma, sans-serif;font-size:9pt\"><span style=\"color:#21586D; font-weight:600\"> \ud83c\udd61 <\/span> - <span style=\"color:#742B36; font-weight:600\">Kosette<\/span>, PM 2.5 Replaceable Filter,<span style=\"color:#32893E; font-weight:600;\"> 24 Filters<\/span><\/span>","Price":5.91,"reviews_total":2.0,"Area":11.82}];
+
+var width = '100%' ;
+
+var Price = data.map(function(d){return d.Price;})
+var minPrice = d3.min(Price) ;
+var maxPrice = d3.max(Price) ;
+
+var reviewsTotal = data.map(function(d){return d.reviews_total;})
+var minreviewsTotal = d3.min(reviewsTotal) ;
+var maxreviewsTotal = d3.max(reviewsTotal) ;
+
+var Area = data.map(function(d){return d.Area;})
+var minArea = d3.min(Area) ;
+var maxArea = d3.max(Area) ;
+
+
+var priceScale = d3.scaleLinear()
+  .domain([minPrice, maxPrice])
+  .range([20, 70]);
+
+var area_scale = d3.scaleLinear()
+.domain([minArea, maxArea])
+.range(['#D7F1FE', '#0046AA'])
+
+var border_scale = d3.scaleLinear()
+.domain([minArea, maxArea])
+.range([ '#0046AA', '#D7F1FE'])
+
+var c = 0;
+var bar_margine = 25 ;
+// Calculate cumulative sum
+data.map(function(d, i) {
+    d['cumulativeCost']=c;
+    d['cumulativeText']=c+ priceScale(d.Price)/2; // Cumulative sum for subsequent elements
+    c = c + priceScale(d.Price) + bar_margine;
+});
+console.log(data);
+
+// Define a reusable function to create an axis
+function createAxis(scale, orientation, tickSize) {
+  
+  return d3.axisLeft(scale) // You can change the axis orientation by using d3.axisLeft, d3.axisRight, or d3.axisTop
+    
+    // .ticks(7) // Set the number of ticks on the axis
+    .tickValues(data.map(function(d, i) {return d.cumulativeText}))
+    .tickSize(tickSize) // Set the size of the ticks
+    .tickPadding(8) // Set the padding between ticks and labels
+    .tickFormat(function(d, i) {return '$'+ data[i].Price}) // Set the format of the tick labels
+    
+}
+
+
+// Create a scale for the axis (e.g., linear scale, time scale, etc.)
+var yScale = d3.scaleLinear()
+  .domain([0, c-bar_margine])
+  .range([0, c-bar_margine]);
+
+// Call the reusable function to create the axis
+var yAxis = createAxis(yScale, "bottom", 5); // You can change the orientation and tick size as needed
+
+
+// Create a scale for the axis (e.g., linear scale, time scale, etc.)
+var xScale = d3.scaleLinear()
+  .domain([minreviewsTotal, maxreviewsTotal])
+  .range([100, 600]);
+
+  console.log(xScale(126))
+// Append an SVG element to the DOM and append the axis to it
+var svg = d3.select("body")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", 2000);
+
+svg.append("g")
+  .attr("class", "y-axis")
+  .attr('stroke-width',0)
+  .attr("transform", "translate(50, 25)") // Set the position of the axis on the SVG
+  .call(yAxis); // Call the axis function to generate and render the axis
+
+svg.selectAll(".bar")
+   .data(data)
+   .enter()
+   .append("rect")
+   .attr("class", "bar")
+   .attr('fill', function(d) { return area_scale(d.Area) ; })
+   .attr("fill-opacity",".8")
+   .attr('stroke-width', '0')
+   .attr('stroke',function(d) { return border_scale(d.Area) ; })
+   .attr("x", 0)
+   .attr("y", function(d) { return d.cumulativeCost ; })
+   .attr("height", function(d) { return priceScale(d.Price); })
+   .attr("width", function(d) { return priceScale(d.reviews_total) ; })
+
+   .attr("transform", "translate(50, 25)");
+
+
+svg.selectAll('foreignObject')
+.data(data).enter().append("foreignObject")
+      .attr("x", 0) // Set the x position of the text
+      .attr("y", function(d) { return d.cumulativeCost-18 ; }) // Set the y position of the text
+      .attr("width", 600) // Set the width of the text
+      .attr("height", 100) // Set the height of the text
+      .html(function(d, i ) { if(i<8){ return d.ProductName; }  })
+      // .style("font-weight", "bold")
+      .attr("transform", "translate(50, 25)");
+
+// svg.selectAll('text')
+// .data(data).enter().append("text")
+//       .attr("x", 0) // Set the x position of the text
+//       .attr("y", function(d) { return d.cumulativeCost-19 ; }) // Set the y position of the text
+//       .attr("width", 600) // Set the width of the text
+//       .attr("height", 100) // Set the height of the text
+//       .text(function(d) { return `<p style="padding: 0; margin: 0;">${d.ProductName}</p>` ; })
+//       // .style("font-weight", "bold")
+//       .attr("transform", "translate(50, 25)");
+
+
+
+function createXAxis(scale, orientation, tickSize) {
+  return d3.axisBottom(scale) // You can change the axis orientation by using d3.axisLeft, d3.axisRight, or d3.axisTop
+    
+    .ticks(10) // Set the number of ticks on the axis
+    // .tickValues([10, 20, 70, 40, 50])
+    .tickSize(tickSize) // Set the size of the ticks
+    .tickPadding(8) // Set the padding between ticks and labels
+    .tickFormat(function(d) {
+      return d
+    }); // Set the format of the tick labels
+}
+
+
+
+// Call the reusable function to create the axis
+var xAxis = createXAxis(xScale, "bottom", 10); // You can change the orientation and tick size as needed
+
+
+
+svg.append("g")
+  .attr("class", "x-axis")
+  .attr("transform", `translate(-50, ${c+7})`) //  Set the position of the axis on the SVG
+  .call(xAxis); // Call the axis function to generate and render the axis
+
+console.log(svg.selectAll("g path"));
+svg.selectAll("g path")
+  .style("stroke", "#8C52FF")
+  // .style("stroke-width", "2px")
+  ;
+
+svg.selectAll("g line")
+  .style("stroke", "#8C52FF")
+  .style("stroke-width", "2px")
+  ;
+
+svg.selectAll("g text")
+  .style("stroke", "#8C52FF") //#DBF16A
+  .style("stroke-width", ".8px")
+  .attr("transform", "rotate(-30)")
+
+  </script>
+</body>
+</html>
