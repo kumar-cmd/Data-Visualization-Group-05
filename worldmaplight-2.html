@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Indian Map with States</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+  
+  
+    
+  </head>
+  <style type="text/css">
+    .tooltip {
+      position: absolute;
+      padding: 10px;
+      background-color: white;
+      border: 0.1px solid gray;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+    }
+
+ th {
+    color:gray;
+}
+ tr {
+    color:#2980B9;
+}
+
+/*.table{
+    border: 1px solid #2980B9;
+}*/
+  
+  </style>
+  <body>
+    <div id="map-container"></div>
+    <div class="tooltip"></div>
+    <script>
+
+
+    var jsn ={"Brazil": {"coord":[-140,50], "type": [0, 3], "revenue": 67.32, "average_rating": 5.0, "quantity": 3, "rating_values": [0, 0, 0, 0, 3]}, "China": {"coord":[-40,0], "type": [10, 1], "revenue": 105.92, "average_rating": 4.27, "quantity": 11, "rating_values": [0, 1, 2, 1, 7]}, "France": {"coord":[-30,-130], "type": [83, 19], "revenue": 1370.47, "average_rating": 4.25, "quantity": 102, "rating_values": [5, 4, 10, 25, 58]}, "Germany": {"coord":[-150,0], "type": [5, 6], "revenue": 211.04, "average_rating": 4.18, "quantity": 11, "rating_values": [0, 2, 0, 3, 6]}, "Israel": {"coord":[-50,-0], "type": [15, 152], "revenue": 2870.58, "average_rating": 4.53, "quantity": 167, "rating_values": [4, 6, 9, 26, 122]}, "Japan": {"coord":[90,0], "type": [40, 81], "revenue": 2045.11, "average_rating": 3.97, "quantity": 121, "rating_values": [4, 11, 24, 28, 54]}, "Korea, South": {"coord":[50,50], "type": [14, 5], "revenue": 349.92, "average_rating": 3.68, "quantity": 19, "rating_values": [4, 1, 1, 4, 9]}, "Mexico": {"coord":[-100,-0], "type": [9, 5], "revenue": 317.74, "average_rating": 4.79, "quantity": 14, "rating_values": [0, 0, 1, 1, 12]}, "Russia": {"coord":[50,50], "type": [680, 621], "revenue": 18855.46, "average_rating": 4.61, "quantity": 1301, "rating_values": [28, 20, 66, 205, 982]}, "Saudi Arabia": {"coord":[50,50], "type": [96, 131], "revenue": 3916.52, "average_rating": 4.22, "quantity": 227, "rating_values": [15, 8, 22, 48, 134]}, "Taiwan": {"coord":[-50,60], "type": [10, 9], "revenue": 201.41, "average_rating": 4.42, "quantity": 19, "rating_values": [0, 0, 2, 7, 10]}, "United States": {"coord":[-50,-50], "type": [860, 994], "revenue": 31334.66, "average_rating": 4.41, "quantity": 1854, "rating_values": [65, 66, 150, 344, 1229]}};
+
+
+
+const maxCount = d3.max(Object.values(jsn), d => (d.type)[0]+(d.type)[1]);
+const totalCount = d3.sum(Object.values(jsn), d => (d.type)[0]+(d.type)[1]);
+
+const maxRevenue = d3.max(Object.values(jsn), d => d.revenue);
+const minRevenue = d3.min(Object.values(jsn), d => d.revenue);
+console.log(maxCount, totalCount);
+
+const radiusScale = d3.scaleLinear()
+                      .domain([0,maxCount])
+                      .range([0,60])
+
+// const revenueScale = d3.scaleLinear()
+//                       .domain([0,maxRevenue])
+//                       .range([0,60])
+//     
+
+
+
+
+
+    
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    
+    const revenueScale = d3.scaleLinear()
+    .domain([minRevenue,(maxRevenue-minRevenue)/2, maxRevenue])
+    .range(["#FCC7B4", "#FFA83F","#66000C"]) //"#FCC7B4","#66000C" //"#FFA83F","#960205"
+      // Set up container and SVG elements
+      const container = d3.select("#map-container");
+
+      const width = 1260;
+      const height = 1000;
+      const svg = container.append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+
+
+
+
+      // Load Indian map data ########################
+      d3.json("../data/countries_github.json")
+      .then(function(data) {
+
+      	
+
+
+      	const projection =  d3.geoMercator()
+                              .center([0, 30])
+                              .rotate([-10, 0])
+                              .scale(200)
+                              .translate([width / 2, height / 2]);
+
+        // Create path generator
+        const path = d3.geoPath().projection(projection);
+
+        const country_name = ["Russia","United States","Saudi Arabia",
+        "Israel","Japan","France","Taiwan","Korea, South","Mexico","China",
+        "Germany", "Brazil","Hong Kong", "Australia", ];
+
+
+    const groups = svg.selectAll("g")
+					  .data(data.features)
+					  .enter()
+					  .append("g")
+					  // .attr("transform", (d, i) => `translate(${i * 100 + 50}, 50)`); // adjust x and y as needed
+
+
+
+        const paths = groups
+            .append("path")
+            .attr("d", path)
+            // .attr('fill', function(d){ if(country_name.includes(d.properties.ADMIN)){ return color(d.properties.ADMIN) }else{return '#F2F2F2'}})
+            .attr('fill', function(d){ if(d.properties.name in jsn){ return revenueScale(jsn[d.properties.name]['revenue']) }else{return '#F2F2F2'}})
+            .style("stroke", function(d){ if(country_name.includes(d.properties.name)){ return "#FFA83F" }else{return '#FFFFFF'}})
+            .attr('fill-opacity','.9')
+            .style("stroke-width", 1)
+            .on("click", function(event, d) {
+              if(d.properties.name in jsn){
+        // Display the tooltip with the dynamic value
+        d3.select(".tooltip").style("opacity", 1)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px")
+          .html(`${d.properties.name}<hr> <table class="table">
+    
+      <tr>
+        <th>Disposable</th>
+        <th>Reusable</th>
+        <th>Revenue</th>
+      </tr>
+    
+      <tr>
+        <td>${jsn[d.properties.name]['type'][0]}</td>
+        <td>${jsn[d.properties.name]['type'][1]}</td>
+        <td>$${jsn[d.properties.name]['revenue']}</td>
+      </tr>
+      
+    
+  </table>`); // Set the title attribute dynamically
+    }
+      })
+    .on("mouseout", function(event, d) {
+    d3.select(".tooltip").style("opacity", 1)
+  })
+                  
+      console.log(path.centroid(data.features[2]));
+      console.log(data.features[2].properties.name);      
+
+       // Add labels to each state
+        const labels = svg.selectAll('text')
+    .data(data.features)
+    .enter().append('text')
+    .text(function(d){ if(country_name.includes(d.properties.name)){ return d.properties.name }})
+    .attr('x', d => path.centroid(d)[0])
+    .attr('y', d => path.centroid(d)[1])
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'central')
+    .attr('font-size', 12);
+
+
+
+
+      });
+
+
+
+
+
+
+
+
+    </script>
+
+  </body>
+
+</html>
+
+
+
+
+

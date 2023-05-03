@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scatter Plot with D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      .tooltip {
+      position: absolute;
+      padding: 10px;
+      background-color: white;
+      border: 0.1px solid gray;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+    }
+
+ th {
+    color:gray;
+}
+ tr {
+    color:#2980B9;
+}
+
+/*.table{
+    border: 1px solid #2980B9;
+}*/
+    </style>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <div id="rate"></div>
+    <div class="tooltip"></div>
+    <script>
+    var data = [{"product_id":99829,"Country":"ar-SA","Count":28,"Average Rating":42.1428571429,"Price":22.44},{"product_id":99829,"Country":"de-DE","Count":2,"Average Rating":50.0,"Price":22.44},{"product_id":99829,"Country":"en-US","Count":115,"Average Rating":44.8695652174,"Price":22.44},{"product_id":99829,"Country":"fr-FR","Count":2,"Average Rating":50.0,"Price":22.44},{"product_id":99829,"Country":"he-IL","Count":3,"Average Rating":50.0,"Price":22.44},{"product_id":99829,"Country":"ja-JP","Count":7,"Average Rating":38.5714285714,"Price":22.44},{"product_id":99829,"Country":"pt-BR","Count":3,"Average Rating":50.0,"Price":22.44},{"product_id":99829,"Country":"ru-RU","Count":142,"Average Rating":46.338028169,"Price":22.44},{"product_id":99829,"Country":"zh-TW","Count":2,"Average Rating":50.0,"Price":22.44},{"product_id":99830,"Country":"ar-SA","Count":50,"Average Rating":44.8,"Price":22.44},{"product_id":99830,"Country":"en-US","Count":199,"Average Rating":46.2311557789,"Price":22.44},{"product_id":99830,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":22.44},{"product_id":99830,"Country":"fr-FR","Count":8,"Average Rating":38.75,"Price":22.44},{"product_id":99830,"Country":"he-IL","Count":2,"Average Rating":45.0,"Price":22.44},{"product_id":99830,"Country":"ja-JP","Count":10,"Average Rating":44.0,"Price":22.44},{"product_id":99830,"Country":"ko-KR","Count":1,"Average Rating":40.0,"Price":22.44},{"product_id":99830,"Country":"ru-RU","Count":200,"Average Rating":44.9,"Price":22.44},{"product_id":99830,"Country":"zh-CN","Count":1,"Average Rating":50.0,"Price":22.44},{"product_id":99830,"Country":"zh-TW","Count":3,"Average Rating":43.3333333333,"Price":22.44},{"product_id":100099,"Country":"ar-SA","Count":3,"Average Rating":16.6666666667,"Price":49.61},{"product_id":100099,"Country":"en-US","Count":26,"Average Rating":41.1538461538,"Price":49.61},{"product_id":100099,"Country":"ja-JP","Count":6,"Average Rating":25.0,"Price":49.61},{"product_id":100099,"Country":"ko-KR","Count":2,"Average Rating":15.0,"Price":49.61},{"product_id":100099,"Country":"ru-RU","Count":4,"Average Rating":32.5,"Price":49.61},{"product_id":100234,"Country":"ar-SA","Count":11,"Average Rating":33.6363636364,"Price":44.31},{"product_id":100234,"Country":"en-US","Count":30,"Average Rating":41.3333333333,"Price":44.31},{"product_id":100234,"Country":"es-MX","Count":2,"Average Rating":50.0,"Price":44.31},{"product_id":100234,"Country":"fr-FR","Count":1,"Average Rating":30.0,"Price":44.31},{"product_id":100234,"Country":"ru-RU","Count":5,"Average Rating":38.0,"Price":44.31},{"product_id":100237,"Country":"ar-SA","Count":27,"Average Rating":42.5925925926,"Price":17.72},{"product_id":100237,"Country":"de-DE","Count":1,"Average Rating":20.0,"Price":17.72},{"product_id":100237,"Country":"en-US","Count":308,"Average Rating":41.7207792208,"Price":17.72},{"product_id":100237,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":17.72},{"product_id":100237,"Country":"fr-FR","Count":1,"Average Rating":50.0,"Price":17.72},{"product_id":100237,"Country":"he-IL","Count":69,"Average Rating":44.6376811594,"Price":17.72},{"product_id":100237,"Country":"ja-JP","Count":19,"Average Rating":35.2631578947,"Price":17.72},{"product_id":100237,"Country":"ru-RU","Count":104,"Average Rating":43.6538461538,"Price":17.72},{"product_id":100541,"Country":"ar-SA","Count":7,"Average Rating":44.2857142857,"Price":26.57},{"product_id":100541,"Country":"de-DE","Count":3,"Average Rating":46.6666666667,"Price":26.57},{"product_id":100541,"Country":"en-US","Count":90,"Average Rating":43.0,"Price":26.57},{"product_id":100541,"Country":"es-MX","Count":1,"Average Rating":40.0,"Price":26.57},{"product_id":100541,"Country":"he-IL","Count":2,"Average Rating":50.0,"Price":26.57},{"product_id":100541,"Country":"ja-JP","Count":2,"Average Rating":30.0,"Price":26.57},{"product_id":100541,"Country":"ru-RU","Count":40,"Average Rating":47.5,"Price":26.57},{"product_id":100837,"Country":"ar-SA","Count":14,"Average Rating":45.0,"Price":5.61},{"product_id":100837,"Country":"de-DE","Count":1,"Average Rating":20.0,"Price":5.61},{"product_id":100837,"Country":"en-US","Count":109,"Average Rating":44.9541284404,"Price":5.61},{"product_id":100837,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":5.61},{"product_id":100837,"Country":"fr-FR","Count":4,"Average Rating":42.5,"Price":5.61},{"product_id":100837,"Country":"he-IL","Count":1,"Average Rating":50.0,"Price":5.61},{"product_id":100837,"Country":"ja-JP","Count":11,"Average Rating":42.7272727273,"Price":5.61},{"product_id":100837,"Country":"ko-KR","Count":5,"Average Rating":32.0,"Price":5.61},{"product_id":100837,"Country":"ru-RU","Count":77,"Average Rating":47.9220779221,"Price":5.61},{"product_id":100837,"Country":"zh-CN","Count":1,"Average Rating":50.0,"Price":5.61},{"product_id":100837,"Country":"zh-TW","Count":1,"Average Rating":50.0,"Price":5.61},{"product_id":100839,"Country":"ar-SA","Count":1,"Average Rating":50.0,"Price":4.49},{"product_id":100839,"Country":"en-US","Count":14,"Average Rating":40.0,"Price":4.49},{"product_id":100839,"Country":"fr-FR","Count":2,"Average Rating":40.0,"Price":4.49},{"product_id":100839,"Country":"ja-JP","Count":1,"Average Rating":20.0,"Price":4.49},{"product_id":100839,"Country":"ko-KR","Count":1,"Average Rating":40.0,"Price":4.49},{"product_id":100839,"Country":"ru-RU","Count":6,"Average Rating":46.6666666667,"Price":4.49},{"product_id":100840,"Country":"ar-SA","Count":10,"Average Rating":40.0,"Price":3.93},{"product_id":100840,"Country":"en-US","Count":18,"Average Rating":43.3333333333,"Price":3.93},{"product_id":100840,"Country":"es-MX","Count":2,"Average Rating":50.0,"Price":3.93},{"product_id":100840,"Country":"ja-JP","Count":1,"Average Rating":50.0,"Price":3.93},{"product_id":100840,"Country":"ko-KR","Count":1,"Average Rating":50.0,"Price":3.93},{"product_id":100840,"Country":"ru-RU","Count":36,"Average Rating":47.7777777778,"Price":3.93},{"product_id":101029,"Country":"ar-SA","Count":1,"Average Rating":50.0,"Price":36.54},{"product_id":101029,"Country":"de-DE","Count":1,"Average Rating":50.0,"Price":36.54},{"product_id":101029,"Country":"en-US","Count":29,"Average Rating":41.0344827586,"Price":36.54},{"product_id":101029,"Country":"fr-FR","Count":1,"Average Rating":20.0,"Price":36.54},{"product_id":101029,"Country":"he-IL","Count":2,"Average Rating":25.0,"Price":36.54},{"product_id":101029,"Country":"ja-JP","Count":2,"Average Rating":40.0,"Price":36.54},{"product_id":101029,"Country":"ru-RU","Count":6,"Average Rating":41.6666666667,"Price":36.54},{"product_id":101029,"Country":"zh-CN","Count":1,"Average Rating":50.0,"Price":36.54},{"product_id":101691,"Country":"ar-SA","Count":3,"Average Rating":50.0,"Price":17.72},{"product_id":101691,"Country":"en-US","Count":51,"Average Rating":44.9019607843,"Price":17.72},{"product_id":101691,"Country":"es-MX","Count":1,"Average Rating":30.0,"Price":17.72},{"product_id":101691,"Country":"he-IL","Count":26,"Average Rating":43.4615384615,"Price":17.72},{"product_id":101691,"Country":"ja-JP","Count":9,"Average Rating":43.3333333333,"Price":17.72},{"product_id":101691,"Country":"ru-RU","Count":17,"Average Rating":45.8823529412,"Price":17.72},{"product_id":101692,"Country":"ar-SA","Count":7,"Average Rating":45.7142857143,"Price":17.72},{"product_id":101692,"Country":"en-US","Count":136,"Average Rating":45.5147058824,"Price":17.72},{"product_id":101692,"Country":"fr-FR","Count":4,"Average Rating":45.0,"Price":17.72},{"product_id":101692,"Country":"he-IL","Count":45,"Average Rating":47.1111111111,"Price":17.72},{"product_id":101692,"Country":"ja-JP","Count":18,"Average Rating":39.4444444444,"Price":17.72},{"product_id":101692,"Country":"ko-KR","Count":1,"Average Rating":10.0,"Price":17.72},{"product_id":101692,"Country":"ru-RU","Count":48,"Average Rating":44.375,"Price":17.72},{"product_id":101774,"Country":"ar-SA","Count":22,"Average Rating":40.9090909091,"Price":2.95},{"product_id":101774,"Country":"en-US","Count":70,"Average Rating":46.1428571429,"Price":2.95},{"product_id":101774,"Country":"fr-FR","Count":5,"Average Rating":50.0,"Price":2.95},{"product_id":101774,"Country":"ja-JP","Count":4,"Average Rating":35.0,"Price":2.95},{"product_id":101774,"Country":"ko-KR","Count":2,"Average Rating":40.0,"Price":2.95},{"product_id":101774,"Country":"ru-RU","Count":61,"Average Rating":47.868852459,"Price":2.95},{"product_id":101774,"Country":"zh-CN","Count":1,"Average Rating":50.0,"Price":2.95},{"product_id":101774,"Country":"zh-TW","Count":3,"Average Rating":43.3333333333,"Price":2.95},{"product_id":101955,"Country":"ar-SA","Count":11,"Average Rating":38.1818181818,"Price":8.86},{"product_id":101955,"Country":"de-DE","Count":3,"Average Rating":43.3333333333,"Price":8.86},{"product_id":101955,"Country":"en-US","Count":286,"Average Rating":42.4125874126,"Price":8.86},{"product_id":101955,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":8.86},{"product_id":101955,"Country":"fr-FR","Count":48,"Average Rating":42.7083333333,"Price":8.86},{"product_id":101955,"Country":"he-IL","Count":10,"Average Rating":49.0,"Price":8.86},{"product_id":101955,"Country":"ja-JP","Count":7,"Average Rating":44.2857142857,"Price":8.86},{"product_id":101955,"Country":"ru-RU","Count":286,"Average Rating":46.5734265734,"Price":8.86},{"product_id":101955,"Country":"zh-CN","Count":3,"Average Rating":36.6666666667,"Price":8.86},{"product_id":101955,"Country":"zh-TW","Count":3,"Average Rating":43.3333333333,"Price":8.86},{"product_id":102455,"Country":"ar-SA","Count":3,"Average Rating":33.3333333333,"Price":2.95},{"product_id":102455,"Country":"en-US","Count":36,"Average Rating":40.8333333333,"Price":2.95},{"product_id":102455,"Country":"he-IL","Count":2,"Average Rating":45.0,"Price":2.95},{"product_id":102455,"Country":"ja-JP","Count":5,"Average Rating":40.0,"Price":2.95},{"product_id":102455,"Country":"ru-RU","Count":22,"Average Rating":40.9090909091,"Price":2.95},{"product_id":102522,"Country":"ar-SA","Count":2,"Average Rating":45.0,"Price":47.24},{"product_id":102522,"Country":"en-US","Count":24,"Average Rating":42.9166666667,"Price":47.24},{"product_id":102522,"Country":"fr-FR","Count":3,"Average Rating":50.0,"Price":47.24},{"product_id":102522,"Country":"ja-JP","Count":2,"Average Rating":50.0,"Price":47.24},{"product_id":102522,"Country":"ko-KR","Count":1,"Average Rating":50.0,"Price":47.24},{"product_id":102522,"Country":"ru-RU","Count":8,"Average Rating":43.75,"Price":47.24},{"product_id":102734,"Country":"ar-SA","Count":13,"Average Rating":43.0769230769,"Price":15.35},{"product_id":102734,"Country":"en-US","Count":158,"Average Rating":46.6455696203,"Price":15.35},{"product_id":102734,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":15.35},{"product_id":102734,"Country":"fr-FR","Count":15,"Average Rating":36.0,"Price":15.35},{"product_id":102734,"Country":"he-IL","Count":2,"Average Rating":50.0,"Price":15.35},{"product_id":102734,"Country":"ja-JP","Count":6,"Average Rating":46.6666666667,"Price":15.35},{"product_id":102734,"Country":"ru-RU","Count":141,"Average Rating":47.6595744681,"Price":15.35},{"product_id":102734,"Country":"zh-TW","Count":1,"Average Rating":50.0,"Price":15.35},{"product_id":103204,"Country":"en-US","Count":34,"Average Rating":47.0588235294,"Price":50.19},{"product_id":103204,"Country":"es-MX","Count":2,"Average Rating":50.0,"Price":50.19},{"product_id":103204,"Country":"fr-FR","Count":2,"Average Rating":50.0,"Price":50.19},{"product_id":103204,"Country":"ko-KR","Count":2,"Average Rating":50.0,"Price":50.19},{"product_id":103204,"Country":"ru-RU","Count":2,"Average Rating":50.0,"Price":50.19},{"product_id":103205,"Country":"ar-SA","Count":8,"Average Rating":45.0,"Price":2.95},{"product_id":103205,"Country":"en-US","Count":62,"Average Rating":44.8387096774,"Price":2.95},{"product_id":103205,"Country":"fr-FR","Count":2,"Average Rating":50.0,"Price":2.95},{"product_id":103205,"Country":"ru-RU","Count":48,"Average Rating":47.0833333333,"Price":2.95},{"product_id":103205,"Country":"zh-CN","Count":4,"Average Rating":40.0,"Price":2.95},{"product_id":103205,"Country":"zh-TW","Count":2,"Average Rating":40.0,"Price":2.95},{"product_id":103743,"Country":"ar-SA","Count":2,"Average Rating":40.0,"Price":6.61},{"product_id":103743,"Country":"en-US","Count":18,"Average Rating":47.7777777778,"Price":6.61},{"product_id":103743,"Country":"es-MX","Count":1,"Average Rating":50.0,"Price":6.61},{"product_id":103743,"Country":"fr-FR","Count":2,"Average Rating":50.0,"Price":6.61},{"product_id":103743,"Country":"ja-JP","Count":4,"Average Rating":35.0,"Price":6.61},{"product_id":103743,"Country":"ru-RU","Count":17,"Average Rating":46.4705882353,"Price":6.61},{"product_id":103743,"Country":"zh-TW","Count":2,"Average Rating":45.0,"Price":6.61},{"product_id":103838,"Country":"ar-SA","Count":4,"Average Rating":45.0,"Price":6.85},{"product_id":103838,"Country":"en-US","Count":17,"Average Rating":46.4705882353,"Price":6.85},{"product_id":103838,"Country":"fr-FR","Count":1,"Average Rating":50.0,"Price":6.85},{"product_id":103838,"Country":"he-IL","Count":2,"Average Rating":35.0,"Price":6.85},{"product_id":103838,"Country":"ja-JP","Count":3,"Average Rating":43.3333333333,"Price":6.85},{"product_id":103838,"Country":"ko-KR","Count":1,"Average Rating":50.0,"Price":6.85},{"product_id":103838,"Country":"ru-RU","Count":13,"Average Rating":47.6923076923,"Price":6.85},{"product_id":103838,"Country":"zh-TW","Count":1,"Average Rating":40.0,"Price":6.85},{"product_id":103839,"Country":"en-US","Count":6,"Average Rating":48.3333333333,"Price":6.85},{"product_id":103839,"Country":"he-IL","Count":1,"Average Rating":50.0,"Price":6.85},{"product_id":103839,"Country":"ru-RU","Count":5,"Average Rating":48.0,"Price":6.85},{"product_id":103840,"Country":"en-US","Count":10,"Average Rating":46.0,"Price":6.85},{"product_id":103840,"Country":"fr-FR","Count":1,"Average Rating":50.0,"Price":6.85},{"product_id":103840,"Country":"ja-JP","Count":2,"Average Rating":50.0,"Price":6.85},{"product_id":103840,"Country":"ko-KR","Count":2,"Average Rating":45.0,"Price":6.85},{"product_id":103840,"Country":"ru-RU","Count":5,"Average Rating":48.0,"Price":6.85},{"product_id":103841,"Country":"en-US","Count":2,"Average Rating":50.0,"Price":6.85},{"product_id":103841,"Country":"ja-JP","Count":1,"Average Rating":40.0,"Price":6.85},{"product_id":103841,"Country":"ru-RU","Count":3,"Average Rating":33.3333333333,"Price":6.85},{"product_id":103841,"Country":"zh-TW","Count":1,"Average Rating":40.0,"Price":6.85},{"product_id":103842,"Country":"en-US","Count":4,"Average Rating":47.5,"Price":6.85},{"product_id":103842,"Country":"ru-RU","Count":4,"Average Rating":47.5,"Price":6.85},{"product_id":104022,"Country":"en-US","Count":1,"Average Rating":40.0,"Price":11.81},{"product_id":104022,"Country":"ja-JP","Count":1,"Average Rating":50.0,"Price":11.81},{"product_id":104023,"Country":"en-US","Count":2,"Average Rating":40.0,"Price":5.91}];
+    const country = {"en-US": "United States", "ru-RU": "Russia", "ar-SA": "Saudi Arabia", "he-IL": "Israel", "ja-JP": "Japan", "fr-FR": "France", "zh-TW": "Taiwan", "ko-KR": "Korea", "es-MX": "Mexico", "zh-CN": "China", "de-DE": "Germany", "pt-BR": "Brazil"};
+    const product = {"103205": {"name": "Hwipure, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, 1 Mask", "Brand": "Hwipure", "UnitPrice": 2.95, "ProductPrice": 2.95, "Type": "disposable", "Size": "free size", "Number": 1}, "101774": {"name": "HIGUARD, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, 1 Mask", "Brand": "HIGUARD", "UnitPrice": 2.95, "ProductPrice": 2.95, "Type": "disposable", "Size": "free size", "Number": 1}, "101955": {"name": "SunJoy, KN95, Professional Protective Disposable Face Mask, 10 Pack", "Brand": "SunJoy", "UnitPrice": 0.89, "ProductPrice": 8.86, "Type": "disposable", "Size": "free size", "Number": 10}, "103838": {"name": "Lozperi, Copper Mask, Adult, Black, 1 Mask", "Brand": "Lozperi", "UnitPrice": 6.85, "ProductPrice": 6.85, "Type": "reusable", "Size": "adult", "Number": 1}, "102734": {"name": "Zidian, Disposable Protective Mask, 50 Pack", "Brand": "Zidian", "UnitPrice": 0.31, "ProductPrice": 15.35, "Type": "disposable", "Size": "free size", "Number": 50}, "100837": {"name": "La Hauteur, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, 1 Mask", "Brand": "La Hauteur", "UnitPrice": 5.61, "ProductPrice": 5.61, "Type": "disposable", "Size": "free size", "Number": 1}, "100840": {"name": "YJ Corporation, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, for Kids, 1 Mask", "Brand": "YJ Corporation", "UnitPrice": 3.93, "ProductPrice": 3.93, "Type": "disposable", "Size": "kids", "Number": 1}, "103204": {"name": "Hwipure, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask,  25 Masks", "Brand": "Hwipure", "UnitPrice": 2.01, "ProductPrice": 50.19, "Type": "disposable", "Size": "free size", "Number": 25}, "103840": {"name": "Lozperi, Copper Mask, Adult, Gray, 1 Mask", "Brand": "Lozperi", "UnitPrice": 6.85, "ProductPrice": 6.85, "Type": "reusable", "Size": "adult", "Number": 1}, "103743": {"name": "Puritas, 10 Days Mask, Large, 3 Pack", "Brand": "Puritas", "UnitPrice": 2.2, "ProductPrice": 6.61, "Type": "reusable", "Size": "large", "Number": 3}, "102522": {"name": "Dr. Puri, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, 20 Masks", "Brand": "Dr. Puri", "UnitPrice": 2.36, "ProductPrice": 47.24, "Type": "disposable", "Size": "free size", "Number": 20}, "103839": {"name": "Lozperi, Copper Mask, Adult, Dot, 1 Count", "Brand": "Lozperi", "UnitPrice": 6.85, "ProductPrice": 6.85, "Type": "reusable", "Size": "adult", "Number": 1}, "104023": {"name": "Kosette, PM 2.5 Replaceable Filter, 24 Filters", "Brand": "Kosette", "UnitPrice": 0.25, "ProductPrice": 5.91, "Type": "reusable", "Size": "free size", "Number": 24}, "101692": {"name": "Kitsch, 100% Cotton Reusable Face Masks, Neutral, 3 Pack", "Brand": "Kitsch", "UnitPrice": 5.91, "ProductPrice": 17.72, "Type": "reusable", "Size": "free size", "Number": 3}, "100839": {"name": "One Fine Day, Disposable KF94 ( N95 / KN95/ FFP2 ) Mask, 1 Mask", "Brand": "One Fine Day", "UnitPrice": 4.49, "ProductPrice": 4.49, "Type": "disposable", "Size": "free size", "Number": 1}, "100237": {"name": "Kitsch, 100% Cotton Reuseable Face Masks, Leopard, 3 Pack", "Brand": "Kitsch", "UnitPrice": 5.91, "ProductPrice": 17.72, "Type": "reusable", "Size": "free size", "Number": 3}, "103841": {"name": "Lozperi, Copper Mask, Kids, Black, 1 Mask", "Brand": "Lozperi", "UnitPrice": 6.85, "ProductPrice": 6.85, "Type": "reusable", "Size": "kids", "Number": 1}, "99830": {"name": "Kosette, Nano Reusable Face Protection Mask, Medium, 1 Mask", "Brand": "Kosette", "UnitPrice": 22.44, "ProductPrice": 22.44, "Type": "reusable", "Size": "medium", "Number": 1}, "104022": {"name": "Kosette, Fashion Mask with Filter Pocket,  3 Masks", "Brand": "Kosette", "UnitPrice": 3.94, "ProductPrice": 11.81, "Type": "reusable", "Size": "free size", "Number": 3}, "99829": {"name": "Kosette, Nano Reusable Face Protection Mask, Large, 1 Mask", "Brand": "Kosette", "UnitPrice": 22.44, "ProductPrice": 22.44, "Type": "reusable", "Size": "large", "Number": 1}, "103842": {"name": "Lozperi, Copper Mask, Kids, Gray, 1 Count", "Brand": "Lozperi", "UnitPrice": 6.85, "ProductPrice": 6.85, "Type": "reusable", "Size": "kids", "Number": 1}, "102455": {"name": "Now Foods, Face Mask, Grey, S-M, 1 Mask", "Brand": "Now Foods", "UnitPrice": 2.95, "ProductPrice": 2.95, "Type": "reusable", "Size": "small", "Number": 1}, "101691": {"name": "Kitsch, 100% Cotton Reuseable Face Masks, Blush, 3 Pack", "Brand": "Kitsch", "UnitPrice": 5.91, "ProductPrice": 17.72, "Type": "reusable", "Size": "free size", "Number": 3}, "100541": {"name": "Tony Moly, CTT KN95 Respirator Mask, 5 Count", "Brand": "Tony Moly", "UnitPrice": 5.31, "ProductPrice": 26.57, "Type": "reusable", "Size": "free size", "Number": 5}, "100099": {"name": "Luseta Beauty, Disposable Protection Face Mask, 50 Pack", "Brand": "Luseta Beauty", "UnitPrice": 0.99, "ProductPrice": 49.61, "Type": "disposable", "Size": "free size", "Number": 50}, "100234": {"name": "Luseta Beauty, Disposable Protection Face Mask, 50 Pack", "Brand": "Luseta Beauty", "UnitPrice": 0.89, "ProductPrice": 44.31, "Type": "disposable", "Size": "free size", "Number": 50}, "101029": {"name": "Landsberg, 3 Ply Disposable Protective Face Mask, 50 Pack", "Brand": "Landsberg", "UnitPrice": 0.73, "ProductPrice": 36.54, "Type": "disposable", "Size": "free size", "Number": 50}};
+
+      const margin = {top: 20, right: 20, bottom: 60, left: 60};
+const width = 1260 - margin.left - margin.right;
+const height = 600 - margin.top - margin.bottom;
+
+
+const svg = d3.select("#chart")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+const xScale = d3.scaleBand()
+  .range([0, width])
+  .domain(data.map(d => d.product_id +"\n" +product[d.product_id]['Brand']))
+  .padding(0.1)
+
+  ;
+
+const yScale = d3.scaleBand()
+  .range([height, 0])
+  .domain(data.map(d => country[d.Country]));
+
+const countScale = d3.scaleLinear()
+  .domain([0, d3.max(data, d => +d.Count)])
+  .range([7, 25]);
+
+const maxRate = d3.max(data, d => +d['Average Rating']);
+const ratingScale = d3.scaleLinear()
+  .domain([1,2,3,4,5])
+  .range(['#FF4545','#FFA534','#FFE234','#B7DD28', '#56E32B']);
+
+const priceScale = d3.scaleLinear()
+  .domain([0, d3.max(data, d => +d.Price)])
+  .range(['white', '#8C52FF']);
+
+const xAxis = d3.axisBottom(xScale).tickPadding(25).tickSize(10);
+svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(xAxis);
+
+svg.append("g")
+  .call(d3.axisLeft(yScale))
+  // .attr("transform", "rotate(65)")
+  ;
+
+
+var cls = svg.selectAll("circle")
+  .data(data)
+  .enter()
+  .append("circle")
+  .attr("cx", d => xScale(d.product_id +"\n" +product[d.product_id]['Brand']) + xScale.bandwidth() / 2)
+  .attr("cy", d => yScale(country[d.Country])+ yScale.bandwidth()/2)
+  .attr("r", d => countScale(d.Count))
+  .attr('stroke-width', 1.4)
+  // .attr('stroke',function(d){return ratingScale(d['Average Rating']/10)} ) //8C52FF
+  .attr('stroke',"#8C52FF" )
+  .attr('stroke-dasharray',function(d){console.log(product[d.product_id]); if(product[d.product_id]["Type"] == "disposable"){return 3} else{return 0}})
+  // .attr('fill',d => ratingScale(d['Average Rating']) )
+  .attr('fill',d => ratingScale(d['Average Rating']/10) )
+  .attr('fill-opacity','.7')
+  .attr("stroke-opacity", '1')
+  // .attr('fill','white' )
+  .on("mouseover", function(event, d) {
+        // Display the tooltip with the dynamic value
+        d3.select(".tooltip").style("opacity", 1)
+          .style("display", "block")
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px")
+          .html(`<b>${country[d.Country]}, ${product[d.product_id]['Brand']}</b><hr> <table class="table">
+    
+      <tr>
+        <th>Counts</th>
+        <th>Price</th>
+        <th>Rating</th>
+      </tr>
+    
+      <tr>
+        <td>${d.Count}</td>
+        <td>$${d.Price.toFixed(1)}</td>
+        <td>${(d['Average Rating']/10).toFixed(1)}</td>
+      </tr>
+      
+    
+  </table>`); // Set the title attribute dynamically
+    
+      })
+    .on("mouseout", function(event, d) {
+    d3.select(".tooltip").style("opacity", 0)
+  })
+  ;
+
+const svg2 = d3.select("#rate")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", 100)
+  .append("g")
+  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+  ;
+
+var cls = svg2.selectAll("circle")
+  .data(data)
+  .enter()
+  .append("circle")
+  .attr("cx", d => xScale(d.product_id +"\n" +product[d.product_id]['Brand']) + xScale.bandwidth()*2)
+  .attr("cy", 20)
+  .attr("r", 15)
+  .attr('stroke-width', 1)
+  .attr('stroke','black' )
+  .attr('stroke-dasharray',0)
+  .attr('fill',function(d){return priceScale(d.Price)})
+  .attr('fill-opacity',".8")
+  
+
+
+
+// console.log(svg.selectAll("g path"));
+svg.selectAll("g path")
+  .style("stroke", "#82AE8B")
+  .style("stroke-width", "4px");
+
+svg.selectAll("g text")
+  .style("stroke", "#82AE8B") //#DBF16A
+  .style("stroke-width", ".8px")
+  .attr("transform", "rotate(-30)")
+  ;
+// const labels = xAxis.selectAll('.tick text').nodes().map(node => node.textContent);
+// console.log(labels);
+    </script>
+  </body>
+</html>
