@@ -84,7 +84,7 @@ const radiusScale = d3.scaleLinear()
 
 
       // Load Indian map data ########################
-      d3.json("../data/countries_github.json")
+      d3.json("data/countries_github.json")
       .then(function(data) {
 
       	
@@ -120,8 +120,8 @@ const radiusScale = d3.scaleLinear()
             .style("stroke", function(d){ if(country_name.includes(d.properties.name)){ return "#FFA83F" }else{return '#FFFFFF'}})
             .attr('fill-opacity','.9')
             .style("stroke-width", 1)
-            .on("click", function(event, d) {
-              if(d.properties.name in jsn){
+            .on("mouseover", function(event, d) {
+              if(country_name.includes(d.properties.name)){
         // Display the tooltip with the dynamic value
         d3.select(".tooltip").style("opacity", 1)
           .style("display", "block")
@@ -130,15 +130,15 @@ const radiusScale = d3.scaleLinear()
           .html(`${d.properties.name}<hr> <table class="table">
     
       <tr>
-        <th>Disposable</th>
         <th>Reusable</th>
+        <th>Disposable</th>
         <th>Revenue</th>
       </tr>
     
       <tr>
-        <td>${jsn[d.properties.name]['type'][0]}</td>
-        <td>${jsn[d.properties.name]['type'][1]}</td>
-        <td>$${jsn[d.properties.name]['revenue']}</td>
+        <td>890</td>
+        <td>741</td>
+        <td>$8097</td>
       </tr>
       
     
@@ -146,7 +146,7 @@ const radiusScale = d3.scaleLinear()
     }
       })
     .on("mouseout", function(event, d) {
-    d3.select(".tooltip").style("opacity", 1)
+    d3.select(".tooltip").style("opacity", 0)
   })
                   
       console.log(path.centroid(data.features[2]));
@@ -165,6 +165,62 @@ const radiusScale = d3.scaleLinear()
 
 
 
+// #############
+var type = [0,1];
+var radius = 50;
+    const namecolor = d3.scaleOrdinal()
+    // .sort(null)
+      .domain(type)
+      .range(['#8ECB4E', ' #436EBF']);
+
+    // Define the arc function
+    const arc = d3.arc()
+      .innerRadius(radius * 0.7)
+      .outerRadius(radius);
+
+        // Define the pie function
+    	const pie = d3.pie()
+      	.value(d => d);
+
+
+    // Create the SVG element
+    const donuts = groups
+      .append('g')
+      .attr('transform', function(d){ if(d.properties.name in jsn){ return `translate(${path.centroid(d)[0] + jsn[d.properties.name]['coord'][0]}, ${path.centroid(d)[1] + jsn[d.properties.name]['coord'][1]})`; }} );
+
+
+    // Create the donut chart
+    const arcs = donuts.selectAll('arc')
+      .data(function(d){ if(d.properties.name in jsn){
+      return pie(jsn[d.properties.name]['type']) } else {return pie([])}})
+      .enter()
+      .append('g')
+      .attr('class', 'arc');
+
+    arcs.append('path')
+      .attr('d', arc)
+      .attr('fill', function(d) {console.log(d.index); return namecolor(d.index); })
+      .attr('fill-opacity','1')
+      ;
+
+        donuts.append('text')
+      // .attr('transform', d => `translate(${arc.centroid(d)})`)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'red')
+      .text(function(d){
+        if(d.properties.name in jsn){
+         var r = jsn[d.properties.name]['type'][0]+jsn[d.properties.name]['type'][1];
+         var percent = ((r/totalCount)*100).toFixed(2);
+        return percent +"%" }
+      });
+
+      donuts.append('text')
+      .attr('transform', 'translate(0,72)')
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'green')
+      .text(function(d){ return d.properties.name });
+
+// ###########
 
       });
 
